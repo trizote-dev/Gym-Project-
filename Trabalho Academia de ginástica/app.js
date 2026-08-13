@@ -3,7 +3,7 @@ const btnCadastrar = document.getElementById('btn-cadastrar');
 
 btnEntrar.addEventListener('click', function(event) {
     event.preventDefault();
-    window.location.href = 'login.html';
+    window.location.href = 'entrar.html';
 });
 
 btnCadastrar.addEventListener('click', function(event) {
