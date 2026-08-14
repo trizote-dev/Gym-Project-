@@ -1,0 +1,28 @@
+body {
+    background-color: #f4f7f6;
+    color: #333;
+    line-height: 1.6;
+}
+header {
+    background-color: #000000;
+    color: rgb(230, 255, 1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 5%;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+nav ul {
+    display: flex;
+    list-style: none;
+}
+nav ul li {
+    margin-left: 20px;
+}
+ h1 {
+    font-size: 1.8rem;
+    text-align: center;
+}
