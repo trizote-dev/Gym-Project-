@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>GOLD'S GYM</title>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="Img/gold logo.jpg" alt="Logo Gold's Gym" class="logo">
+            <h1>GOLD'S GYM</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="entrar.html" id="btn-entrar">Entrar</a></li>
+                <li><a href="cadastro.html" id="btn-cadastrar">Cadastrar</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main id="home">
+        <section class="hero-section">
+            <h2>Comece sua jornada para uma vida mais saudável!</h2>
+            <p>Cuidar da saúde e do corpo é uma excelente escolha. Praticar atividades físicas traz inúmeros benefícios para o bem-estar físico e mental.</p>
+        </section>
+
+        <section class="esportes-container">
+            <h3>Conheça as modalidades do nosso CT</h3>
+            
+            <div class="grid-esportes">
+                <article class="card-esporte">
+                    <h4>Natação</h4>
+                    <p>A prática se destaca como um poderoso aliado da saúde integral. A água reduz o peso corporal em até 90% e elimina o impacto severo nas articulações, tornando o exercício seguro para a coluna e os joelhos.</p>
+                    <a href="entrar.html" class="btn-esporte">Adicionar Esporte</a>
+                </article>
+
+                <article class="card-esporte">
+                    <h4>Boxe</h4>
+                    <p>Destaca-se pela tradição olímpica e foca exclusivamente em golpes de punho, agilidade de esquiva e fortalecimento do tronco e braços.</p>
+                    <a href="entrar.html" class="btn-esporte">Adicionar Esporte</a>
+                </article>
+
+                <article class="card-esporte">
+                    <h4>Jiu-Jitsu Brasileiro (BJJ)</h4>
+                    <p>Arte focada em combates no solo que utiliza alavancas e finalizações para imobilizar oponentes, excelente para ganho de força e flexibilidade.</p>
+                    <a href="entrar.html" class="btn-esporte">Adicionar Esporte</a>
+                </article>
+
+                <article class="card-esporte">
+                    <h4>Capoeira</h4>
+                    <p>Une luta, dança e cultura em movimentos fluidos e acrobáticos ao som do berimbau, proporcionando desenvolvimento de equilíbrio, ritmo e resistência.</p>
+                    <a href="entrar.html" class="btn-esporte">Adicionar Esporte</a>
+                </article>
+            </div>
+        </section>
+
+        <section class="localizacao-container">
+            <div class="card-localizacao">
+                <h3>Sua Localização</h3>
+                <p id="status-localizacao">Clique no botão para encontrar a unidade mais próxima ou verificar sua localização.</p>
+                <p id="info-endereco" class="endereco-destaque"></p>
+                <button id="btn-localizacao" class="btn-localizacao">Obter minha localização</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
