@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="area-membro.css">
+    <title>Minha Área - GOLD'S GYM</title>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="Img/gold logo.jpg" alt="logo">
+            <h1>GOLD'S GYM</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><span id="saudacao">Olá, aluno</span></li>
+                <li><a href="index.html" id="btn-sair">Sair</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main id="painel">
+        <section class="boas-vindas">
+            <h2>Bem-vindo de volta!</h2>
+            <p>Aqui está o resumo da sua conta na academia</p>
+        </section>
+
+        <section class="cards-painel">
+            <article class="card-info">
+                <h3>Meu plano</h3>
+                <p class="card-destaque">Mensal</p>
+                <p>Vence em 15/09/2026</p>
+            </article>
+
+            <article class="card-info">
+                <h3>Próximo treino</h3>
+                <p class="card-destaque">Peito e Ombro</p>
+                <p>Hoje às 18:00</p>
+            </article>
+
+            <article class="card-info">
+                <h3>Frequência do mês</h3>
+                <p class="card-destaque">12 treinos</p>
+                <p>Você está indo muito bem!</p>
+            </article>
+        </section>
+
+        <section class="minhas-modalidades">
+            <h2>Minhas modalidades</h2>
+            <div id="lista-modalidades" class="cards-painel"></div>
+            <p id="valor-total"></p>
+        </section>
+
+        <div class="acoes-painel">
+            <a href="index.html" class="btn-adicionar">Adicionar modalidade ao perfil</a>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
