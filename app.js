@@ -1,5 +1,29 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    const navVisitante = document.getElementById('nav-visitante');
+    const navLogado = document.getElementById('nav-logado');
+
+    if (localStorage.getItem('logado') === 'sim') {
+        if (navVisitante) navVisitante.style.display = 'none';
+        if (navLogado) navLogado.style.display = 'flex';
+    } else {
+        if (navVisitante) navVisitante.style.display = 'flex';
+        if (navLogado) navLogado.style.display = 'none';
+    }
+
+    const btnSairHome = document.getElementById('btn-sair-home');
+    if (btnSairHome) {
+        btnSairHome.addEventListener('click', (event) => {
+            event.preventDefault();
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('logado');
+                localStorage.removeItem('emailLogado');
+                localStorage.removeItem('nomeLogado');
+                window.location.reload();
+            }
+        });
+    }
+
     const btnLocalizacao = document.getElementById('btn-localizacao');
     const statusLocalizacao = document.getElementById('status-localizacao');
     const infoEndereco = document.getElementById('info-endereco');
@@ -58,35 +82,31 @@ document.addEventListener('DOMContentLoaded', () => {
         botao.addEventListener('click', function(event) {
             event.preventDefault();
 
-            // Se ninguém estiver logado, não tem "perfil" pra
-            // guardar a modalidade — manda pra tela de login.
             if (localStorage.getItem('logado') !== 'sim') {
                 alert('Você precisa entrar (ou se cadastrar) antes de adicionar uma modalidade.');
                 window.location.href = 'entrar.html';
                 return;
             }
 
-            // .closest() sobe pela árvore do HTML até achar o
-            // elemento pai mais próximo com essa classe — assim
-            // a gente chega no <article> que tem os data-attributes,
-            // não importa se clicou no botão ou em outra parte.
             const card = botao.closest('.card-esporte');
             const nomeModalidade = card.dataset.modalidade;
             const valorModalidade = Number(card.dataset.valor);
 
             const emailAtual = localStorage.getItem('emailLogado');
-            const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-            const usuario = usuarios.find(function(u) {
+            let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+            let usuario = usuarios.find(function(u) {
                 return u.email === emailAtual;
             });
 
             if (!usuario) {
-                return;
+                usuario = {
+                    nome: localStorage.getItem('nomeLogado') || 'Aluno',
+                    email: emailAtual,
+                    modalidades: []
+                };
+                usuarios.push(usuario);
             }
 
-            // Se esse usuário ainda não tem a lista de modalidades
-            // (ex: se cadastrou antes da gente criar essa parte),
-            // criamos ela vazia agora.
             if (!usuario.modalidades) {
                 usuario.modalidades = [];
             }
@@ -102,10 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             usuario.modalidades.push({ nome: nomeModalidade, valor: valorModalidade });
 
-            // "usuario" é o mesmo objeto que está dentro do array
-            // "usuarios" (em JS, objetos são compartilhados por
-            // referência) — então ao salvar o array inteiro de
-            // volta, a modalidade nova já vai junto.
             localStorage.setItem('usuarios', JSON.stringify(usuarios));
 
             alert('"' + nomeModalidade + '" adicionada ao seu perfil!');
@@ -125,8 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 saudacao.textContent = 'Olá, ' + (nome || email);
             }
 
-            // Busca o usuário atual dentro da lista completa de
-            // usuários, pra pegar as modalidades DELE especificamente.
             const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
             const usuarioAtual = usuarios.find(function(u) {
                 return u.email === email;
@@ -136,23 +150,43 @@ document.addEventListener('DOMContentLoaded', () => {
             const listaModalidades = document.getElementById('lista-modalidades');
             const valorTotalEl = document.getElementById('valor-total');
 
-            if (modalidades.length === 0) {
-                listaModalidades.innerHTML = '<p>Você ainda não adicionou nenhuma modalidade. <a href="index.html" style="color:#ffd700;">Ver modalidades disponíveis</a>.</p>';
-            } else {
-                let valorTotal = 0;
-                let htmlCards = '';
+            function renderizarModalidades() {
+                if (modalidades.length === 0) {
+                    listaModalidades.innerHTML = '<p>Você ainda não adicionou nenhuma modalidade. <a href="index.html" style="color:#ffd700;">Ver modalidades disponíveis</a>.</p>';
+                    valorTotalEl.textContent = '';
+                } else {
+                    let valorTotal = 0;
+                    let htmlCards = '';
 
-                modalidades.forEach(function(modalidade) {
-                    valorTotal += modalidade.valor;
-                    htmlCards += '<article class="card-info">' +
-                        '<h3>' + modalidade.nome + '</h3>' +
-                        '<p class="card-destaque">R$ ' + modalidade.valor + '/mês</p>' +
-                        '</article>';
-                });
+                    modalidades.forEach(function(modalidade, index) {
+                        valorTotal += modalidade.valor;
+                        htmlCards += '<article class="card-info card-modalidade">' +
+                            '<h3>' + modalidade.nome + '</h3>' +
+                            '<p class="card-destaque">R$ ' + modalidade.valor + '/mês</p>' +
+                            '<button class="btn-remover-esporte" data-index="' + index + '">Cancelar/Excluir</button>' +
+                            '</article>';
+                    });
 
-                listaModalidades.innerHTML = htmlCards;
-                valorTotalEl.textContent = 'Total mensal das modalidades: R$ ' + valorTotal;
+                    listaModalidades.innerHTML = htmlCards;
+                    valorTotalEl.textContent = 'Total mensal das modalidades: R$ ' + valorTotal;
+
+                    const botoesRemover = document.querySelectorAll('.btn-remover-esporte');
+                    botoesRemover.forEach(function(btn) {
+                        btn.addEventListener('click', function() {
+                            const idx = this.dataset.index;
+                            const nomeEsporte = modalidades[idx].nome;
+
+                            if (confirm('Deseja realmente cancelar/remover "' + nomeEsporte + '"?')) {
+                                modalidades.splice(idx, 1);
+                                localStorage.setItem('usuarios', JSON.stringify(usuarios));
+                                renderizarModalidades();
+                            }
+                        });
+                    });
+                }
             }
+
+            renderizarModalidades();
         }
     }
 
@@ -163,6 +197,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const nome = document.getElementById('nome').value;
             const email = document.getElementById('email').value;
+
+            let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+            let usuarioExistente = usuarios.find(u => u.email === email);
+
+            if (!usuarioExistente) {
+                usuarios.push({
+                    nome: nome,
+                    email: email,
+                    modalidades: []
+                });
+                localStorage.setItem('usuarios', JSON.stringify(usuarios));
+            }
 
             localStorage.setItem('logado', 'sim');
             localStorage.setItem('emailLogado', email);
@@ -180,8 +226,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const senha = document.getElementById('senha').value;
 
             if (email === 'aluno@goldsgym.com' && senha === '123456') {
+                let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+                let usuarioExistente = usuarios.find(u => u.email === email);
+
+                if (!usuarioExistente) {
+                    usuarios.push({
+                        nome: 'Aluno Teste',
+                        email: email,
+                        modalidades: []
+                    });
+                    localStorage.setItem('usuarios', JSON.stringify(usuarios));
+                }
+
                 localStorage.setItem('logado', 'sim');
                 localStorage.setItem('emailLogado', email);
+                localStorage.setItem('nomeLogado', 'Aluno Teste');
                 window.location.href = 'area-membro.html';
             } else {
                 alert('E-mail ou senha incorretos. Tente novamente.');
@@ -196,6 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (confirm('Tem certeza que deseja sair?')) {
                 localStorage.removeItem('logado');
                 localStorage.removeItem('emailLogado');
+                localStorage.removeItem('nomeLogado');
                 window.location.href = 'index.html';
             }
         });
