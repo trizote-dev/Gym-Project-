@@ -45,6 +45,17 @@
     margin-bottom: 5px;
 }
 
+#btn-inicio {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-right: 15px;
+}
+
+#btn-inicio:hover {
+    color: #ffd700;
+}
+
 #saudacao {
     color: #ccc;
     font-size: 0.9rem;

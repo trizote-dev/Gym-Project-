@@ -1,29 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const navVisitante = document.getElementById('nav-visitante');
-    const navLogado = document.getElementById('nav-logado');
-
-    if (localStorage.getItem('logado') === 'sim') {
-        if (navVisitante) navVisitante.style.display = 'none';
-        if (navLogado) navLogado.style.display = 'flex';
-    } else {
-        if (navVisitante) navVisitante.style.display = 'flex';
-        if (navLogado) navLogado.style.display = 'none';
-    }
-
-    const btnSairHome = document.getElementById('btn-sair-home');
-    if (btnSairHome) {
-        btnSairHome.addEventListener('click', (event) => {
-            event.preventDefault();
-            if (confirm('Tem certeza que deseja sair?')) {
-                localStorage.removeItem('logado');
-                localStorage.removeItem('emailLogado');
-                localStorage.removeItem('nomeLogado');
-                window.location.reload();
-            }
-        });
-    }
-
     const btnLocalizacao = document.getElementById('btn-localizacao');
     const statusLocalizacao = document.getElementById('status-localizacao');
     const infoEndereco = document.getElementById('info-endereco');
@@ -77,6 +53,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const navVisitante = document.getElementById('nav-visitante');
+    const navLogado = document.getElementById('nav-logado');
+
+    if (navVisitante && navLogado) {
+        if (localStorage.getItem('logado') === 'sim') {
+            navVisitante.style.display = 'none';
+            navLogado.style.display = 'flex';
+        } else {
+            navVisitante.style.display = 'flex';
+            navLogado.style.display = 'none';
+        }
+    }
+
+    const btnSairHome = document.getElementById('btn-sair-home');
+    if (btnSairHome) {
+        btnSairHome.addEventListener('click', function(event) {
+            event.preventDefault();
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('logado');
+                localStorage.removeItem('emailLogado');
+                localStorage.removeItem('nomeLogado');
+                window.location.reload();
+            }
+        });
+    }
+
     const botoesEsporte = document.querySelectorAll('.btn-esporte');
     botoesEsporte.forEach(function(botao) {
         botao.addEventListener('click', function(event) {
@@ -93,18 +95,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const valorModalidade = Number(card.dataset.valor);
 
             const emailAtual = localStorage.getItem('emailLogado');
-            let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-            let usuario = usuarios.find(function(u) {
+            const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+            const usuario = usuarios.find(function(u) {
                 return u.email === emailAtual;
             });
 
             if (!usuario) {
-                usuario = {
-                    nome: localStorage.getItem('nomeLogado') || 'Aluno',
-                    email: emailAtual,
-                    modalidades: []
-                };
-                usuarios.push(usuario);
+                return;
             }
 
             if (!usuario.modalidades) {
@@ -121,7 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             usuario.modalidades.push({ nome: nomeModalidade, valor: valorModalidade });
-
             localStorage.setItem('usuarios', JSON.stringify(usuarios));
 
             alert('"' + nomeModalidade + '" adicionada ao seu perfil!');
@@ -141,52 +137,64 @@ document.addEventListener('DOMContentLoaded', () => {
                 saudacao.textContent = 'Olá, ' + (nome || email);
             }
 
-            const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-            const usuarioAtual = usuarios.find(function(u) {
-                return u.email === email;
-            });
-            const modalidades = (usuarioAtual && usuarioAtual.modalidades) || [];
-
             const listaModalidades = document.getElementById('lista-modalidades');
             const valorTotalEl = document.getElementById('valor-total');
 
-            function renderizarModalidades() {
+            function renderModalidades() {
+                const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+                const usuarioAtual = usuarios.find(function(u) {
+                    return u.email === email;
+                });
+                const modalidades = (usuarioAtual && usuarioAtual.modalidades) || [];
+
                 if (modalidades.length === 0) {
                     listaModalidades.innerHTML = '<p>Você ainda não adicionou nenhuma modalidade. <a href="index.html" style="color:#ffd700;">Ver modalidades disponíveis</a>.</p>';
                     valorTotalEl.textContent = '';
-                } else {
-                    let valorTotal = 0;
-                    let htmlCards = '';
-
-                    modalidades.forEach(function(modalidade, index) {
-                        valorTotal += modalidade.valor;
-                        htmlCards += '<article class="card-info card-modalidade">' +
-                            '<h3>' + modalidade.nome + '</h3>' +
-                            '<p class="card-destaque">R$ ' + modalidade.valor + '/mês</p>' +
-                            '<button class="btn-remover-esporte" data-index="' + index + '">Cancelar/Excluir</button>' +
-                            '</article>';
-                    });
-
-                    listaModalidades.innerHTML = htmlCards;
-                    valorTotalEl.textContent = 'Total mensal das modalidades: R$ ' + valorTotal;
-
-                    const botoesRemover = document.querySelectorAll('.btn-remover-esporte');
-                    botoesRemover.forEach(function(btn) {
-                        btn.addEventListener('click', function() {
-                            const idx = this.dataset.index;
-                            const nomeEsporte = modalidades[idx].nome;
-
-                            if (confirm('Deseja realmente cancelar/remover "' + nomeEsporte + '"?')) {
-                                modalidades.splice(idx, 1);
-                                localStorage.setItem('usuarios', JSON.stringify(usuarios));
-                                renderizarModalidades();
-                            }
-                        });
-                    });
+                    return;
                 }
+
+                let valorTotal = 0;
+                let htmlCards = '';
+
+                modalidades.forEach(function(modalidade) {
+                    valorTotal += modalidade.valor;
+                    htmlCards += '<article class="card-info card-modalidade">' +
+                        '<div>' +
+                        '<h3>' + modalidade.nome + '</h3>' +
+                        '<p class="card-destaque">R$ ' + modalidade.valor + '/mês</p>' +
+                        '</div>' +
+                        '<button class="btn-remover-esporte" data-nome="' + modalidade.nome + '">Remover</button>' +
+                        '</article>';
+                });
+
+                listaModalidades.innerHTML = htmlCards;
+                valorTotalEl.textContent = 'Total mensal das modalidades: R$ ' + valorTotal;
+
+                const botoesRemover = listaModalidades.querySelectorAll('.btn-remover-esporte');
+                botoesRemover.forEach(function(botao) {
+                    botao.addEventListener('click', function() {
+                        const nomeParaRemover = botao.dataset.nome;
+
+                        if (!confirm('Remover "' + nomeParaRemover + '" do seu perfil?')) {
+                            return;
+                        }
+
+                        const usuariosAtuais = JSON.parse(localStorage.getItem('usuarios')) || [];
+                        const usuarioAtualizado = usuariosAtuais.find(function(u) {
+                            return u.email === email;
+                        });
+
+                        usuarioAtualizado.modalidades = usuarioAtualizado.modalidades.filter(function(m) {
+                            return m.nome !== nomeParaRemover;
+                        });
+
+                        localStorage.setItem('usuarios', JSON.stringify(usuariosAtuais));
+                        renderModalidades();
+                    });
+                });
             }
 
-            renderizarModalidades();
+            renderModalidades();
         }
     }
 
@@ -197,18 +205,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const nome = document.getElementById('nome').value;
             const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
 
-            let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-            let usuarioExistente = usuarios.find(u => u.email === email);
+            const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
 
-            if (!usuarioExistente) {
-                usuarios.push({
-                    nome: nome,
-                    email: email,
-                    modalidades: []
-                });
-                localStorage.setItem('usuarios', JSON.stringify(usuarios));
+            const jaExiste = usuarios.some(function(usuario) {
+                return usuario.email === email;
+            });
+
+            if (jaExiste) {
+                alert('Já existe uma conta com esse e-mail. Tente entrar em vez de cadastrar.');
+                return;
             }
+
+            usuarios.push({ nome: nome, email: email, senha: senha, modalidades: [] });
+            localStorage.setItem('usuarios', JSON.stringify(usuarios));
 
             localStorage.setItem('logado', 'sim');
             localStorage.setItem('emailLogado', email);
@@ -225,25 +236,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const email = document.getElementById('email').value;
             const senha = document.getElementById('senha').value;
 
-            if (email === 'aluno@goldsgym.com' && senha === '123456') {
-                let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-                let usuarioExistente = usuarios.find(u => u.email === email);
+            const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+            const usuarioEncontrado = usuarios.find(function(usuario) {
+                return usuario.email === email && usuario.senha === senha;
+            });
 
-                if (!usuarioExistente) {
-                    usuarios.push({
-                        nome: 'Aluno Teste',
-                        email: email,
-                        modalidades: []
-                    });
-                    localStorage.setItem('usuarios', JSON.stringify(usuarios));
-                }
-
+            if (usuarioEncontrado) {
                 localStorage.setItem('logado', 'sim');
-                localStorage.setItem('emailLogado', email);
-                localStorage.setItem('nomeLogado', 'Aluno Teste');
+                localStorage.setItem('emailLogado', usuarioEncontrado.email);
+                localStorage.setItem('nomeLogado', usuarioEncontrado.nome);
                 window.location.href = 'area-membro.html';
             } else {
-                alert('E-mail ou senha incorretos. Tente novamente.');
+                alert('E-mail ou senha incorretos, ou você ainda não se cadastrou.');
             }
         });
     }
