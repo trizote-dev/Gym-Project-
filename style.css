@@ -86,6 +86,32 @@ nav ul li a {
     box-shadow: 0 4px 10px rgba(255, 255, 255, 0.3);
 }
 
+#btn-area {
+    color: #ffd700;
+    border: 2px solid #ffd700;
+    background-color: transparent;
+}
+
+#btn-area:hover {
+    background-color: #ffd700;
+    color: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(255, 215, 0, 0.3);
+}
+
+#btn-sair-home {
+    color: #ff4d4d;
+    border: 2px solid #ff4d4d;
+    background-color: transparent;
+}
+
+#btn-sair-home:hover {
+    background-color: #ff4d4d;
+    color: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(255, 77, 77, 0.3);
+}
+
 #home {
     max-width: 1200px;
     margin: 0 auto;

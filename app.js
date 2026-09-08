@@ -125,6 +125,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    const treinosPorModalidade = {
+        'Natação': 'Nado livre 40min + técnica de respiração',
+        'Boxe': 'Combinação de socos + trabalho de esquiva',
+        'Jiu-Jitsu Brasileiro (BJJ)': 'Passagem de guarda + quedas',
+        'Capoeira': 'Ginga + floreios + música',
+        'Musculação': 'Treino de Peito e Ombro'
+    };
+
     const painel = document.getElementById('painel');
     if (painel) {
         if (localStorage.getItem('logado') !== 'sim') {
@@ -158,10 +166,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 modalidades.forEach(function(modalidade) {
                     valorTotal += modalidade.valor;
+                    const treino = treinosPorModalidade[modalidade.nome] || 'Treino combinado com o instrutor';
                     htmlCards += '<article class="card-info card-modalidade">' +
                         '<div>' +
                         '<h3>' + modalidade.nome + '</h3>' +
                         '<p class="card-destaque">R$ ' + modalidade.valor + '/mês</p>' +
+                        '<p class="treino-modalidade">Treino de hoje: ' + treino + '</p>' +
                         '</div>' +
                         '<button class="btn-remover-esporte" data-nome="' + modalidade.nome + '">Remover</button>' +
                         '</article>';
