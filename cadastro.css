@@ -84,3 +84,17 @@ body {
 .card-cadastro a:hover {
     text-decoration: underline;
 }
+
+.btn-txt {
+    width: 100%;
+    padding: 12px;
+    background-color: #ffd700;
+    border: none;
+    color: #121212;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.3s;
+}
