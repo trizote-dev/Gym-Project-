@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-
     const btnLocalizacao = document.getElementById('btn-localizacao');
     const statusLocalizacao = document.getElementById('status-localizacao');
     const infoEndereco = document.getElementById('info-endereco');
@@ -27,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (data && data.address) {
                             const cidade = data.address.city || data.address.town || data.address.village || 'sua região';
                             const estado = data.address.state || '';
-                            infoEndereco.textContent = `Você está em ${cidade} - ${estado}`;
+                            infoEndereco.textContent = `Você está em ${cidade}\n${estado}`;
                         }
                     } catch (erro) {
                         console.error('Erro ao buscar o endereço:', erro);
@@ -237,43 +236,73 @@ document.addEventListener('DOMContentLoaded', () => {
 
             window.location.href = 'area-membro.html';
         });
+    }
 
-        const btnSalvarTxt = document.getElementById('btn-salvar-txt');
+    const btnSalvarTxt = document.getElementById('btn-salvar-txt');
     if (btnSalvarTxt) {
-    btnSalvarTxt.addEventListener('click', function() {
-        const form = document.getElementById('formCadastro');
+        btnSalvarTxt.addEventListener('click', function() {
+            const form = document.getElementById('formCadastro');
 
-        // confere se os campos obrigatórios foram preenchidos
-        if (!form.reportValidity()) {
-            return;
-        }
+            if (!form.reportValidity()) {
+                return;
+            }
 
-        const nome = document.getElementById('nome').value;
-        const cpf = document.getElementById('cpf').value;
-        const email = document.getElementById('email').value;
-        const cep = document.getElementById('cep').value;
-        const telefone = document.getElementById('telefone').value;
+            const nome = document.getElementById('nome').value;
+            const cpf = document.getElementById('cpf').value;
+            const email = document.getElementById('email').value;
+            const cep = document.getElementById('cep').value;
+            const telefone = document.getElementById('telefone').value;
 
-        const conteudo =
-            'CADASTRO - GOLD\'S GYM\n' +
-            '----------------------\n' +
-            'Nome: ' + nome + '\n' +
-            'CPF: ' + cpf + '\n' +
-            'E-mail: ' + email + '\n' +
-            'CEP: ' + cep + '\n' +
-            'Telefone: ' + telefone + '\n';
+            const conteudo =
+                'CADASTRO - GOLD\'S GYM\n' +
+                '----------------------\n' +
+                'Nome: ' + nome + '\n' +
+                'CPF: ' + cpf + '\n' +
+                'E-mail: ' + email + '\n' +
+                'CEP: ' + cep + '\n' +
+                'Telefone: ' + telefone + '\n';
 
-        const arquivo = new Blob([conteudo], { type: 'text/plain;charset=utf-8' });
-        const url = URL.createObjectURL(arquivo);
+            const arquivo = new Blob([conteudo], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(arquivo);
 
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'cadastro.txt';
-        link.click();
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'cadastro.txt';
+            link.click();
 
-        URL.revokeObjectURL(url);
-    });
-}
+            URL.revokeObjectURL(url);
+        });
+    }
+
+    const btnSalvarCsv = document.getElementById('btn-salvar-csv');
+    if (btnSalvarCsv) {
+        btnSalvarCsv.addEventListener('click', function() {
+            const form = document.getElementById('formCadastro');
+
+            if (!form.reportValidity()) {
+                return;
+            }
+
+            const nome = document.getElementById('nome').value;
+            const cpf = document.getElementById('cpf').value;
+            const email = document.getElementById('email').value;
+            const cep = document.getElementById('cep').value;
+            const telefone = document.getElementById('telefone').value;
+
+            const cabecalho = 'Nome;CPF;E-mail;CEP;Telefone\n';
+            const dados = `"${nome}";"${cpf}";"${email}";"${cep}";"${telefone}"\n`;
+            const conteudoCsv = cabecalho + dados;
+
+            const arquivo = new Blob(['\uFEFF' + conteudoCsv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(arquivo);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'cadastro.csv';
+            link.click();
+
+            URL.revokeObjectURL(url);
+        });
     }
 
     const formEntrar = document.getElementById('formEntrar');
