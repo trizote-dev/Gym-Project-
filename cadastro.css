@@ -112,3 +112,17 @@ body {
     margin-top: 10px;
     transition: background 0.3s;
 }
+
+.container-anexo-csv {
+    background: #252525;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px dashed #ffd700;
+    margin-bottom: 20px;
+}
+
+.container-anexo-csv input[type="file"] {
+    border: none;
+    background: transparent;
+    padding: 5px 0;
+}

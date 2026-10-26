@@ -12,6 +12,12 @@
         <h1>Informações para Cadastro</h1>
         
         <form id="formCadastro">
+            <!-- Campo para anexar o arquivo CSV -->
+            <div class="grupo-input container-anexo-csv">
+                <label for="input-csv-importar">Importar dados de um arquivo CSV:</label>
+                <input type="file" id="input-csv-importar" accept=".csv">
+            </div>
+
             <div class="grupo-input">
                 <label for="nome">Nome:</label>
                 <input type="text" id="nome" required placeholder="Digite seu nome completo">

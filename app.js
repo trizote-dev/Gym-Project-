@@ -274,6 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- GERAR ARQUIVO CSV ---
     const btnSalvarCsv = document.getElementById('btn-salvar-csv');
     if (btnSalvarCsv) {
         btnSalvarCsv.addEventListener('click', function() {
@@ -302,6 +303,43 @@ document.addEventListener('DOMContentLoaded', () => {
             link.click();
 
             URL.revokeObjectURL(url);
+        });
+    }
+
+    // --- IMPORTAR E LER DADOS DO CSV ---
+    const inputCsvImportar = document.getElementById('input-csv-importar');
+    if (inputCsvImportar) {
+        inputCsvImportar.addEventListener('change', function(e) {
+            const arquivo = e.target.files[0];
+            if (!arquivo) return;
+
+            const leitor = new FileReader();
+            leitor.onload = function(evento) {
+                const conteudo = evento.target.result;
+                const linhas = conteudo.split(/\r\n|\n/);
+
+                // Pula o cabeçalho e pega a segunda linha com dados
+                if (linhas.length > 1 && linhas[1].trim() !== '') {
+                    // Divide os valores separados por ponto e vírgula e remove as aspas
+                    const valores = linhas[1].split(';').map(v => v.replace(/^"|"$/g, '').trim());
+
+                    if (valores.length >= 5) {
+                        document.getElementById('nome').value = valores[0] || '';
+                        document.getElementById('cpf').value = valores[1] || '';
+                        document.getElementById('email').value = valores[2] || '';
+                        document.getElementById('cep').value = valores[3] || '';
+                        document.getElementById('telefone').value = valores[4] || '';
+                        
+                        alert('Dados do arquivo CSV importados com sucesso!');
+                    } else {
+                        alert('O formato do CSV não é compatível.');
+                    }
+                } else {
+                    alert('Arquivo CSV vazio ou sem dados válidos.');
+                }
+            };
+
+            leitor.readAsText(arquivo, 'UTF-8');
         });
     }
 
