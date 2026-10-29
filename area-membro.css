@@ -96,6 +96,39 @@ header nav ul {
     margin-bottom: 30px;
 }
 
+.controles-busca {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+#campo-pesquisa, #select-ordenacao {
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+}
+
+#campo-pesquisa {
+    flex: 1;
+    min-width: 200px;
+}
+
+#campo-pesquisa:focus, #select-ordenacao:focus {
+    border-color: #ffd700;
+    outline: none;
+}
+
+#contador-resultados {
+    color: #aaa;
+    font-size: 0.9rem;
+    width: 100%;
+}
+
 .acoes-painel {
     text-align: center;
 }

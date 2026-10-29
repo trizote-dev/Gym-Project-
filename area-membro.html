@@ -32,7 +32,7 @@
             <article class="card-info">
                 <h3>Meu plano</h3>
                 <p class="card-destaque">Mensal</p>
-                <p>Vence em 15/09/2026</p>
+                <p>Vence em 15/11/2026</p>
             </article>
 
             <article class="card-info">
@@ -44,6 +44,16 @@
 
         <section class="minhas-modalidades">
             <h2>Minhas modalidades</h2>
+            
+            <div class="controles-busca">
+                <input type="text" id="campo-pesquisa" placeholder="Pesquisar modalidade...">
+                <select id="select-ordenacao">
+                    <option value="asc">Ordem Alfabética: A-Z</option>
+                    <option value="desc">Ordem Alfabética: Z-A</option>
+                </select>
+                <p id="contador-resultados"></p>
+            </div>
+
             <div id="lista-modalidades" class="cards-painel"></div>
             <p id="valor-total"></p>
         </section>

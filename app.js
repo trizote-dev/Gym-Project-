@@ -146,6 +146,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const listaModalidades = document.getElementById('lista-modalidades');
             const valorTotalEl = document.getElementById('valor-total');
+            const campoPesquisa = document.getElementById('campo-pesquisa');
+            const selectOrdenacao = document.getElementById('select-ordenacao');
+            const contadorResultados = document.getElementById('contador-resultados');
 
             function renderModalidades() {
                 const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
@@ -157,14 +160,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (modalidades.length === 0) {
                     listaModalidades.innerHTML = '<p>Você ainda não adicionou nenhuma modalidade. <a href="index.html" style="color:#ffd700;">Ver modalidades disponíveis</a>.</p>';
                     valorTotalEl.textContent = '';
+                    if (contadorResultados) contadorResultados.textContent = '';
+                    return;
+                }
+
+                const termoBusca = campoPesquisa ? campoPesquisa.value.toLowerCase().trim() : '';
+                const ordem = selectOrdenacao ? selectOrdenacao.value : 'asc';
+
+                let modalidadesFiltradas = modalidades.filter(function(m) {
+                    const treino = (treinosPorModalidade[m.nome] || '').toLowerCase();
+                    return m.nome.toLowerCase().includes(termoBusca) || treino.includes(termoBusca);
+                });
+
+                modalidadesFiltradas.sort(function(a, b) {
+                    if (ordem === 'asc') {
+                        return a.nome.localeCompare(b.nome);
+                    } else {
+                        return b.nome.localeCompare(a.nome);
+                    }
+                });
+
+                if (contadorResultados) {
+                    contadorResultados.textContent = 'Registros encontrados: ' + modalidadesFiltradas.length;
+                }
+
+                if (modalidadesFiltradas.length === 0) {
+                    listaModalidades.innerHTML = '<p style="color: #ff4d4d; font-weight: bold;">Nenhum registro encontrado</p>';
+                    valorTotalEl.textContent = '';
                     return;
                 }
 
                 let valorTotal = 0;
                 let htmlCards = '';
 
-                modalidades.forEach(function(modalidade) {
-                    valorTotal += modalidade.valor;
+                modalidades.forEach(function(m) {
+                    valorTotal += m.valor;
+                });
+
+                modalidadesFiltradas.forEach(function(modalidade) {
                     const treino = treinosPorModalidade[modalidade.nome] || 'Treino combinado com o instrutor';
                     htmlCards += '<article class="card-info card-modalidade">' +
                         '<div>' +
@@ -201,6 +234,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         renderModalidades();
                     });
                 });
+            }
+
+            if (campoPesquisa) {
+                campoPesquisa.addEventListener('input', renderModalidades);
+            }
+
+            if (selectOrdenacao) {
+                selectOrdenacao.addEventListener('change', renderModalidades);
             }
 
             renderModalidades();
@@ -274,7 +315,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- GERAR ARQUIVO CSV ---
     const btnSalvarCsv = document.getElementById('btn-salvar-csv');
     if (btnSalvarCsv) {
         btnSalvarCsv.addEventListener('click', function() {
@@ -306,7 +346,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- IMPORTAR E LER DADOS DO CSV ---
     const inputCsvImportar = document.getElementById('input-csv-importar');
     if (inputCsvImportar) {
         inputCsvImportar.addEventListener('change', function(e) {
@@ -318,9 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const conteudo = evento.target.result;
                 const linhas = conteudo.split(/\r\n|\n/);
 
-                // Pula o cabeçalho e pega a segunda linha com dados
                 if (linhas.length > 1 && linhas[1].trim() !== '') {
-                    // Divide os valores separados por ponto e vírgula e remove as aspas
                     const valores = linhas[1].split(';').map(v => v.replace(/^"|"$/g, '').trim());
 
                     if (valores.length >= 5) {
